@@ -1,3 +1,3 @@
 # Chess
 
-A **work in process** chess game written in python using the pygame library.
+A _work in progress_ chess game written in python using the pygame library.
