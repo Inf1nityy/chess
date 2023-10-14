@@ -1,21 +1,18 @@
 import pygame
+from board import Board
 from square import Square
+from king import King
+from queen import Queen
+from bishop import Bishop
+from knight import Knight
+from rook import Rook
+from pawn import Pawn
 
 pygame.init()
-screen = pygame.display.set_mode((800, 800))
-clock = pygame.time.Clock()
 
-squares = []
+if __name__ == "__main__":
+    board = Board(800, 800)
 
-def initialize_board():
-    for file in range(8):
-        for rank in range(8):
-            square = Square(file * 100, rank * 100)
-            squares.append(square)
-
-initialize_board()
-
-while True:
-    for square in squares:
-        square.draw(screen)
-    pygame.display.update()
+    while True:
+        board.draw_board()
+        pygame.display.update()
