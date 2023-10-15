@@ -1,12 +1,15 @@
 import pygame
 import os
+from piece import Piece
 
-class King():
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.color = "w"
-        self.dark_image = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'bk.png')), (self.width, self.height))
-        self.white_image = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'wk.png')), (self.width, self.height))
-        self.image = self.white_image if self.color == "w" else self.dark_image
-        self.image_rect = self.image.get_rect()
+class King(Piece):
+    def __init__(self, pos, color, board):
+        super().__init__(pos, color, board)
+        self.color = color
+        image_path = os.path.join('assets', color[0] + "k.png")
+        self.image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(self.image, (board.square_width, board.square_height))
+        self.notation = "k"
+
+    def get_legal_moves(self):
+        return []

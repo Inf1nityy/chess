@@ -1,12 +1,15 @@
 import pygame
 import os
+from piece import Piece
 
-class Queen():
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.color = "w"
-        self.dark_image = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'bq.png')), (self.width, self.height))
-        self.white_image = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'wq.png')), (self.width, self.height))
-        self.image = self.white_image if self.color == "w" else self.dark_image
-        self.image_rect = self.image.get_rect()
+class Queen(Piece):
+    def __init__(self, pos, color, board):
+        super().__init__(pos, color, board)
+        self.color = color
+        image_path = os.path.join('assets', color[0] + "q.png")
+        self.image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(self.image, (board.square_width, board.square_height))
+        self.notation = "q"
+
+    def get_legal_moves(self):
+        return []
