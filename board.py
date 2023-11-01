@@ -93,62 +93,8 @@ class Board:
                 self.selected_piece = clicked_square.occupying_piece
 
     def is_in_check(self, color):
-        king_position = None
-
-        # Find the king's position
-        for square in self.squares:
-            piece = square.occupying_piece
-            if piece and piece.notation == "k" and piece.color == color:
-                king_position = square.pos
-                break
-
-        if king_position is None:
-            return False
-
-        # Check if any opponent's piece can move to the king's position
-        return any(
-            move.pos == king_position
-            for square in self.squares
-            if square.pos != king_position
-            for piece in (square.occupying_piece,)
-            if piece and piece.color != color
-            for move in piece.get_legal_moves()
-        )
+        return False
 
     def is_in_checkmate(self, color):
-        # 1. Find the king of the specified color
-        king = None
-        for square in self.squares:
-            piece = square.occupying_piece
-            if piece and piece.notation == 'k' and piece.color == color:
-                king = piece
-                break
+        return False
 
-        if king is None:
-            return False  # No king of the specified color found
-
-        # 2. Check if the king is in check
-        if self.is_in_check(color):
-            # 3. If the king is in check, check if the king has any legal moves to escape check
-            for move in king.get_legal_moves():
-                # Temporarily move the king to the potential move
-                original_square = king.square
-                king.square = move
-                move.occupying_piece = king
-
-                # Check if the king is still in check after the move
-                if not self.is_in_check(color):
-                    # The king can escape check, so it's not checkmate
-                    king.square = original_square
-                    move.occupying_piece = None
-                    return False
-
-                # Revert the king's move
-                king.square = original_square
-                move.occupying_piece = None
-
-            # 4. If there are no legal moves for the king, it's checkmate
-            self.get_square_from_position(king.pos).highlight = True
-            return True
-
-        return False  # The king is not in check, so it's not checkmate
