@@ -3,6 +3,7 @@ import sys
 from board import Board
 
 pygame.init()
+pygame.display.set_caption("Chess")
 
 if __name__ == "__main__":
     board = Board(600, 600)
