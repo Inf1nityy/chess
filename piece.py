@@ -10,7 +10,7 @@ class Piece():
         self.has_moved = False
 
     def get_valid_moves(self):
-        return self.get_legal_moves() + self.get_attacking_moves()
+        return self.get_legal_moves()
 
     def move(self, square):
         if square in self.get_valid_moves():

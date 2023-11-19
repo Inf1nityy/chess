@@ -3,6 +3,7 @@ import sys
 from board import Board
 
 pygame.init()
+pygame.font.init()
 pygame.display.set_caption("Chess")
 
 if __name__ == "__main__":

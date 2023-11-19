@@ -31,13 +31,14 @@ class Square:
 
     def get_coord(self):
         columns = 'abcdefgh'
-        return columns[int(self.x)] + str(self.y + 1)
+        return columns[int(self.x)] + str(9 - (self.y + 1))
 
     def draw(self, screen):
+        square_rect = self.x * self.width, self.y * self.width, self.width, self.height
         if self.highlight:
-            pygame.draw.rect(screen, self.highlight_color, (self.x * self.width, self.y * self.width, self.width, self.height))
+            pygame.draw.rect(screen, self.highlight_color, square_rect)
         else:
-            pygame.draw.rect(screen, self.square_color, (self.x * self.width, self.y * self.width, self.width, self.height))
+            pygame.draw.rect(screen, self.square_color, square_rect)
 
         if self.occupying_piece != None:
             center_rect = self.occupying_piece.image.get_rect()
@@ -45,3 +46,10 @@ class Square:
             center_rect.x = center_rect.x * self.width
             center_rect.y = center_rect.y * self.height
             screen.blit(self.occupying_piece.image, center_rect.topleft)
+
+        # draw the square coordinate
+        # font = pygame.font.Font(None, 25)
+        # text = font.render(self.get_coord(), 1, self.dark_color if self.square_color != self.dark_color else self.light_color)
+        # screen.blit(text, square_rect)
+
+

@@ -32,11 +32,12 @@ class Board:
 
     def generate_squares(self):
         output = []
-        for y in range(8):
-            for x in range(8):
+        for file in range(8):
+            for rank in reversed(range(8)):
                 output.append(
-                    Square(x, y, self.square_width, self.square_height)
+                    Square(file, rank, self.square_width, self.square_height)
                 )
+
         return output
 
     def get_square_from_position(self, position):
@@ -48,6 +49,9 @@ class Board:
         return self.get_square_from_position(position).occupying_piece
 
     def setup_board(self):
+        for square in self.squares:
+            print(square.coord)
+
         for y, rank in enumerate(self.config):
             for x, piece in enumerate(rank):
                 if piece != '':
