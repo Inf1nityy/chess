@@ -49,9 +49,6 @@ class Board:
         return self.get_square_from_position(position).occupying_piece
 
     def setup_board(self):
-        for square in self.squares:
-            print(square.coord)
-
         for y, rank in enumerate(self.config):
             for x, piece in enumerate(rank):
                 if piece != '':
@@ -97,6 +94,25 @@ class Board:
                 self.selected_piece = clicked_square.occupying_piece
 
     def is_in_check(self, color):
+        king_position = None
+        opposite_color = 'black' if color == 'white' else 'white'
+
+        # find the king
+        for square in self.squares:
+            if square.occupying_piece != None:
+                if square.occupying_piece.notation == "k":
+                    if square.occupying_piece.color == color:
+                        king_position = square.pos
+
+        # check if opponent pieces can capture the king
+        for square in self.squares:
+            if square.occupying_piece != None:
+                if square.occupying_piece.color == opposite_color:
+                    for move in square.occupying_piece.get_legal_moves():
+                        if move.pos == king_position:
+                            return True
+
+
         return False
 
     def is_in_checkmate(self, color):

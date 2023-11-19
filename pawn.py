@@ -38,4 +38,3 @@ class Pawn(Piece):
                         legal_moves.append(square)
 
         return legal_moves
-
