@@ -19,6 +19,10 @@ class Piece():
             self.board.selected_piece = None
             self.has_moved = True
 
+            if self.notation == "p":
+                if self.check_for_promotion():
+                    self.promote("queen")
+
             return True
         else:
             self.board.selected_piece = None
