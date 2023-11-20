@@ -17,31 +17,28 @@ class Pawn(Piece):
 
     def get_legal_moves(self):
         legal_moves = []
-        direction_offset = [-1, 1]
 
         if self.color == 'white':
-            direction_offset.append(-2 if not self.has_moved else 0)
-            capture_offset = [(-1, -1), (1, -1)]
+            direction_offsets = [(0, -1), (-1, -1), (1, -1)]
+            if self.has_moved == False:
+                direction_offsets.append((0, -2))
         else:
-            direction_offset.append(2 if not self.has_moved else 0)
-            capture_offset = [(-1, 1), (1, 1)]
+            direction_offsets = [(0, 1), (-1, 1), (1, 1)]
+            if self.has_moved == False:
+                direction_offsets.append((0, 2))
 
-        for direction in direction_offset:
-            square_position = (self.pos[0], self.pos[1] + direction)
-            square = self.board.get_square_from_position(square_position)
+        for direction_offset in direction_offsets:
+            target_square_position = (self.pos[0] + direction_offset[0], self.pos[1] + direction_offset[1])
+            target_square = self.board.get_square_from_position(target_square_position)
 
-            if square is not None:
-                if square.occupying_piece is None:
-                    legal_moves.append(square)
-
-        for capture in capture_offset:
-            square_position = (self.pos[0] + capture[0], self.pos[1] + capture[1])
-            if 0 <= square_position[0] < 8:  # Check if the position is on the board
-                square = self.board.get_square_from_position(square_position)
-                if square is not None:
-                    if square.occupying_piece is not None:
-                        if square.occupying_piece.color != self.color:
-                            legal_moves.append(square)
+            if target_square is not None:
+                if target_square.occupying_piece is None:
+                    if direction_offset[0] * direction_offset[1] == 0:
+                        legal_moves.append(target_square)
+                else:
+                    if target_square.occupying_piece.color != self.color:
+                        if direction_offset[0] * direction_offset[1] != 0:
+                            legal_moves.append(target_square)
 
         return legal_moves
 

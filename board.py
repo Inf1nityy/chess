@@ -17,6 +17,7 @@ class Board:
         self.clock = pygame.time.Clock()
         self.turn = "white"
         self.selected_piece = None
+        self.en_passant_target = None
         self.config = [
             ['br', 'bn', 'bb', 'bq', 'bk', 'bb', 'bn', 'br'],
             ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],

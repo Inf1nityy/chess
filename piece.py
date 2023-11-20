@@ -17,11 +17,20 @@ class Piece():
             square.occupying_piece = self
             square.highlight = True
             self.board.selected_piece = None
-            self.has_moved = True
 
             if self.notation == "p":
+                if self.has_moved == False:
+                    if abs(prev_square.y - square.y) == 2:
+                        self.board.en_passant_target = self
+
                 if self.check_for_promotion():
                     self.promote("queen") # TODO don't hardcode this figure out a way to bring up a menu to let the player pick what they want to promote to
+
+            self.has_moved = True
+
+            if self.board.en_passant_target != None:
+                if self.board.en_passant_target.color != self.color:
+                    self.board.en_passant_target = None
 
             return True
         else:
