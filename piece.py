@@ -21,7 +21,7 @@ class Piece():
 
             if self.notation == "p":
                 if self.check_for_promotion():
-                    self.promote("queen")
+                    self.promote("queen") # TODO don't hardcode this figure out a way to bring up a menu to let the player pick what they want to promote to
 
             return True
         else:
