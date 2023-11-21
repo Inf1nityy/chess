@@ -11,8 +11,8 @@ class Knight(Piece):
         self.image = pygame.transform.scale(self.image, (board.square_width, board.square_height))
         self.notation = "n"
 
-    def get_legal_moves(self):
-        legal_moves = []
+    def get_possible_moves(self):
+        possible_moves = []
         direction_offsets = [(1, 2), (-1, 2), (1, -2), (-1, -2), (2, 1), (-2, 1), (2, -1), (-2, -1)]
 
         for direction_offset in direction_offsets:
@@ -20,6 +20,6 @@ class Knight(Piece):
             target_square = self.board.get_square_from_position(target_square_position)
 
             if target_square is not None and (target_square.occupying_piece is None or target_square.occupying_piece.color != self.color):
-                legal_moves.append(target_square)
+                possible_moves.append([target_square])
 
-        return legal_moves
+        return possible_moves

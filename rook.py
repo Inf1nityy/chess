@@ -11,8 +11,8 @@ class Rook(Piece):
         self.image = pygame.transform.scale(self.image, (board.square_width, board.square_height))
         self.notation = "r"
 
-    def get_legal_moves(self):
-        legal_moves = []
+    def get_possible_moves(self):
+        possible_moves = []
         direction_offsets = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
         for direction_offset in direction_offsets:
@@ -25,11 +25,12 @@ class Rook(Piece):
                     break  # Break if we go out of bounds
 
                 if target_square.occupying_piece is not None:
-                    if target_square.occupying_piece.color == self.color:
-                        break  # Break if we encounter a square with a piece of the same color
+                    if target_square.occupying_piece.color != self.color:
+                        possible_moves.append([target_square])
+                    break # Break if we encounter a piece
 
-                legal_moves.append(target_square)
+                possible_moves.append([target_square])
 
                 direction_index += 1  # Move to the next square in the direction
 
-        return legal_moves
+        return possible_moves

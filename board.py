@@ -94,27 +94,43 @@ class Board:
             if clicked_square.occupying_piece.color == self.turn:
                 self.selected_piece = clicked_square.occupying_piece
 
-    def is_in_check(self, color):
+    def is_in_check(self, color, board_change=None):
+        output = False
         king_position = None
-        opposite_color = 'black' if color == 'white' else 'white'
+        changing_piece = None
+        old_square = None
+        new_square = None
+        new_square_old_piece = None
 
-        # find the king
-        for square in self.squares:
-            if square.occupying_piece != None:
-                if square.occupying_piece.notation == "k":
-                    if square.occupying_piece.color == color:
-                        king_position = square.pos
+        if board_change is not None:
+            for square in self.squares:
+                if square.pos == board_change[0]:
+                    changing_piece = square.occupying_piece
+                    old_square = square
+                    old_square.occupying_piece = None
+            for square in self.squares:
+                if square.pos == board_change[1]:
+                    new_square = square
+                    new_square_old_piece = new_square.occupying_piece
+                    new_square.occupying_piece = changing_piece
 
-        # check if opponent pieces can capture the king
-        for square in self.squares:
-            if square.occupying_piece != None:
-                if square.occupying_piece.color == opposite_color:
-                    for move in square.occupying_piece.get_legal_moves():
-                        if move.pos == king_position:
-                            return True
-
-
-        return False
+        pieces = [i.occupying_piece for i in self.squares if i.occupying_piece is not None]
+        if changing_piece is not None:
+            if changing_piece.notation == 'k':
+                king_position = new_square.pos
+        if king_position == None:
+            for piece in pieces:
+                if piece.notation == 'k' and piece.color == color:
+                    king_position = piece.pos
+        for piece in pieces:
+            if piece.color != color:
+                for square in piece.attacking_squares():
+                    if square.pos == king_position:
+                        output = True
+        if board_change is not None:
+            old_square.occupying_piece = changing_piece
+            new_square.occupying_piece = new_square_old_piece
+        return output
 
     def is_in_checkmate(self, color):
         return False

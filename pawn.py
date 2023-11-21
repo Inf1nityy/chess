@@ -15,32 +15,64 @@ class Pawn(Piece):
         self.image = pygame.transform.scale(self.image, (board.square_width, board.square_height))
         self.notation = "p"
 
-    def get_legal_moves(self):
-        legal_moves = []
-
+    def get_possible_moves(self):
+        possible_moves = []
         if self.color == 'white':
-            direction_offsets = [(0, -1), (-1, -1), (1, -1)]
+            direction_offsets = [(0, -1)]
             if self.has_moved == False:
                 direction_offsets.append((0, -2))
         else:
-            direction_offsets = [(0, 1), (-1, 1), (1, 1)]
+            direction_offsets = [(0, 1)]
             if self.has_moved == False:
                 direction_offsets.append((0, 2))
 
         for direction_offset in direction_offsets:
-            target_square_position = (self.pos[0] + direction_offset[0], self.pos[1] + direction_offset[1])
-            target_square = self.board.get_square_from_position(target_square_position)
+            square_position = (self.pos[0] + direction_offset[0], self.pos[1] + direction_offset[1])
 
-            if target_square is not None:
-                if target_square.occupying_piece is None:
-                    if direction_offset[0] * direction_offset[1] == 0:
-                        legal_moves.append(target_square)
-                else:
-                    if target_square.occupying_piece.color != self.color:
-                        if direction_offset[0] * direction_offset[1] != 0:
-                            legal_moves.append(target_square)
+            if square_position[1] < 8 and square_position[1] >= 0:
+                possible_moves.append(self.board.get_square_from_position(square_position))
 
-        return legal_moves
+        return possible_moves
+
+    def get_moves(self):
+        moves = []
+        for square in self.get_possible_moves():
+            if square.occupying_piece != None:
+                break
+            else:
+                moves.append(square)
+        if self.color == 'white':
+            if self.x + 1 < 8 and self.y - 1 >= 0:
+                square = self.board.get_square_from_position(
+                    (self.x + 1, self.y - 1)
+                )
+                if square.occupying_piece != None:
+                    if square.occupying_piece.color != self.color:
+                        moves.append(square)
+            if self.x - 1 >= 0 and self.y - 1 >= 0:
+                square = self.board.get_square_from_position(
+                    (self.x - 1, self.y - 1)
+                )
+                if square.occupying_piece != None:
+                    if square.occupying_piece.color != self.color:
+                        moves.append(square)
+        elif self.color == 'black':
+            if self.x + 1 < 8 and self.y + 1 < 8:
+                square = self.board.get_square_from_position((self.x + 1, self.y + 1))
+                if square.occupying_piece != None:
+                    if square.occupying_piece.color != self.color:
+                        moves.append(square)
+            if self.x - 1 >= 0 and self.y + 1 < 8:
+                square = self.board.get_square_from_position((self.x - 1, self.y + 1))
+                if square.occupying_piece != None:
+                    if square.occupying_piece.color != self.color:
+                        moves.append(square)
+        return moves
+
+    def attacking_squares(self):
+        moves = self.get_moves()
+        # return the diagonal moves 
+        return [i for i in moves if i.x != self.x]
 
     def check_for_promotion(self):
         if (self.color == "white" and self.pos[1] == 0) or (self.color == "black" and self.pos[1] == 7):
