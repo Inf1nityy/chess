@@ -133,5 +133,13 @@ class Board:
         return output
 
     def is_in_checkmate(self, color):
+        for square in self.squares:
+            if square.occupying_piece != None and square.occupying_piece.color == color:
+                if square.occupying_piece.get_legal_moves() != []:
+                    return False
+
+        if self.is_in_check(color):
+            return True
+
         return False
 
