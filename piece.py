@@ -1,4 +1,5 @@
 import pygame
+import copy
 
 class Piece():
     def __init__(self, pos, color, board):
@@ -30,7 +31,7 @@ class Piece():
         ]
 
     def move(self, square, force=False):
-        if square in self.get_legal_moves() or force:
+        if square in self.get_legal_moves() and self.color == self.board.turn or force:
             prev_square = self.board.get_square_from_position(self.pos)
             self.pos, self.x, self.y = square.pos, square.x, square.y
             prev_square.occupying_piece = None
@@ -57,14 +58,42 @@ class Piece():
 
             self.has_moved = True
 
-            if self.board.en_passant_target != None:
-                if self.board.en_passant_target.color != self.color:
-                    self.board.en_passant_target = None
+            if force == False:
+                self.board.turn = 'white' if self.board.turn == 'black' else 'black'
 
             return True
         else:
             self.board.selected_piece = None
             return False
+
+    def undo_move(self, current_square, prev_square, has_moved_previously, captured_piece, prev_en_passant_target=None):
+        # Move the piece back to its previous position
+        self.pos, self.x, self.y = prev_square.pos, prev_square.x, prev_square.y
+        prev_square.occupying_piece = self
+        current_square.occupying_piece = captured_piece
+
+        # Unhighlight the square
+        current_square.highlight = False
+        prev_square.highlight = False
+
+        # Restore previous state
+        self.has_moved = has_moved_previously
+
+        # Handle en passant
+        if self.notation == "p" and prev_en_passant_target is not None:
+            self.board.en_passant_target = prev_en_passant_target
+
+        # Move rook back if king castled
+        if self.notation == 'k':
+            if self.x - prev_square.x == 2:
+                rook = self.board.get_piece_from_position((3, self.y))
+                rook.undo_move(self.board.get_square_from_position((5, self.y)), (5, self.y), rook.has_moved)
+            elif self.x - prev_square.x == -2:
+                rook = self.board.get_piece_from_position((5, self.y))
+                rook.undo_move(self.board.get_square_from_position((3, self.y)), (3, self.y), rook.has_moved)
+
+        # Switch the turn back
+        self.board.turn = 'white' if self.board.turn == 'black' else 'black'
 
     def attacking_squares(self):
         return self.get_moves()

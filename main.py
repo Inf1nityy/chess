@@ -9,6 +9,9 @@ pygame.display.set_caption("Chess")
 if __name__ == "__main__":
     board = Board(600, 600)
 
+    result = board.number_of_possible_positions(depth=4)
+    print(f"Number of possible positions: {result}")
+
     while True:
         if board.is_in_checkmate('white') or board.is_in_checkmate('black'):
             print("checkmate")

@@ -1,4 +1,5 @@
 import pygame
+import copy
 from square import Square
 from king import King
 from queen import Queen
@@ -88,11 +89,37 @@ class Board:
                     self.selected_piece = clicked_square.occupying_piece
 
         elif self.selected_piece.move(clicked_square):
-            self.turn = 'white' if self.turn == 'black' else 'black'
+            pass
 
         elif clicked_square.occupying_piece is not None:
             if clicked_square.occupying_piece.color == self.turn:
                 self.selected_piece = clicked_square.occupying_piece
+
+    def number_of_possible_positions(self, depth):
+        if depth == 0:
+            return 1
+
+        number_of_possible_positions = 0
+
+        for square in self.squares:
+            if square.occupying_piece is not None:
+                legal_moves = square.occupying_piece.get_legal_moves()
+                if legal_moves:
+                    for move in legal_moves:
+                        # Save the current state of the square and piece
+                        previous_position = square.occupying_piece.pos
+                        has_moved_previously = square.occupying_piece.has_moved
+                        captured_piece = move.occupying_piece
+
+                        # Make the move
+                        if square.occupying_piece.move(move):
+                            # Recursive call
+                            number_of_possible_positions += self.number_of_possible_positions(depth - 1)
+
+                            # Restore the state after the recursive call
+                            move.occupying_piece.undo_move(move, square, has_moved_previously, captured_piece)
+
+        return number_of_possible_positions
 
     def is_in_check(self, color, board_change=None):
         output = False
