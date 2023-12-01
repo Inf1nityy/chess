@@ -30,17 +30,6 @@ class Square:
             self.height
         )
 
-    def __deepcopy__(self, memo):
-        new_square = self.__class__(self.x, self.y, self.width, self.height)
-        new_square.pos = self.pos
-        new_square.coord = self.coord
-        new_square.occupying_piece = copy.deepcopy(self.occupying_piece, memo)
-        new_square.highlight = self.highlight
-        new_square.highlight_color = self.highlight_color
-        new_square.square_color = self.square_color
-        new_square.rect = copy.deepcopy(self.rect, memo)
-        return new_square
-
     def get_coord(self):
         columns = 'abcdefgh'
         return columns[int(self.x)] + str(9 - (self.y + 1))
