@@ -30,6 +30,7 @@ class Board:
             ['wr', 'wn', 'wb', 'wq', 'wk', 'wb', 'wn', 'wr'],
         ]
         self.squares = self.generate_squares()
+        self.consecutive_moves = 0
         self.setup_board()
 
     def generate_squares(self):
@@ -169,4 +170,22 @@ class Board:
             return True
 
         return False
+
+    def is_in_stalemate(self, color):
+        for square in self.squares:
+            if square.occupying_piece != None and square.occupying_piece.color == color:
+                if square.occupying_piece.get_legal_moves() != []:
+                    return False
+
+        if self.is_in_check(color) == False:
+            return True
+
+        return False
+
+
+    def is_threefold_repetition(self):
+        return False
+
+    def is_draw_by_fifty_moves(self):
+        return self.consecutive_moves >= 100
 

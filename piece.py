@@ -31,6 +31,11 @@ class Piece():
 
     def move(self, square, force=False):
         if square in self.get_legal_moves() and self.color == self.board.turn or force:
+            if self.notation == 'p' or square.occupying_piece != None:
+                self.board.consecutive_moves = 0
+            else:
+                self.board.consecutive_moves += 1
+
             prev_square = self.board.get_square_from_position(self.pos)
             self.pos, self.x, self.y = square.pos, square.x, square.y
             prev_square.occupying_piece = None
