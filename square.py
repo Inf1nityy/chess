@@ -1,5 +1,4 @@
 import pygame
-import copy
 from king import King
 from queen import Queen
 from bishop import Bishop

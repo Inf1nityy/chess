@@ -1,5 +1,4 @@
 import pygame
-import copy
 
 class Piece():
     def __init__(self, pos, color, board):
@@ -40,10 +39,6 @@ class Piece():
             self.board.selected_piece = None
 
             if self.notation == "p":
-                if self.has_moved == False:
-                    if abs(prev_square.y - square.y) == 2:
-                        self.board.en_passant_target = self
-
                 if self.check_for_promotion():
                     self.promote("queen") # TODO don't hardcode this figure out a way to bring up a menu to let the player pick what they want to promote to
 
@@ -66,7 +61,7 @@ class Piece():
             self.board.selected_piece = None
             return False
 
-    def undo_move(self, current_square, prev_square, has_moved_previously, captured_piece, prev_en_passant_target=None):
+    def undo_move(self, current_square, prev_square, has_moved_previously, captured_piece, prev_en_passant_target=None, force=False):
         # Move the piece back to its previous position
         self.pos, self.x, self.y = prev_square.pos, prev_square.x, prev_square.y
         prev_square.occupying_piece = self
@@ -79,21 +74,21 @@ class Piece():
         # Restore previous state
         self.has_moved = has_moved_previously
 
-        # Handle en passant
-        if self.notation == "p" and prev_en_passant_target is not None:
-            self.board.en_passant_target = prev_en_passant_target
+        # Un-castle the rook if king castled
+        if self.notation == 'k' and has_moved_previously is False:
+            if prev_square.x - current_square.x == 2:
+                rook = self.board.get_square_from_position((3, self.y))
+                rook_undo_square = self.board.get_square_from_position((0, self.y))
+                rook.occupying_piece.undo_move(rook, rook_undo_square, False, None, force=True)
+            elif prev_square.x - current_square.x == -2:
+                rook = self.board.get_square_from_position((5, self.y))
+                rook_undo_square = self.board.get_square_from_position((7, self.y))
+                rook.occupying_piece.undo_move(rook, rook_undo_square, False, None, force=True)
 
-        # Move rook back if king castled
-        if self.notation == 'k':
-            if self.x - prev_square.x == 2:
-                rook = self.board.get_piece_from_position((3, self.y))
-                rook.undo_move(self.board.get_square_from_position((5, self.y)), (5, self.y), rook.has_moved)
-            elif self.x - prev_square.x == -2:
-                rook = self.board.get_piece_from_position((5, self.y))
-                rook.undo_move(self.board.get_square_from_position((3, self.y)), (3, self.y), rook.has_moved)
 
         # Switch the turn back
-        self.board.turn = 'white' if self.board.turn == 'black' else 'black'
+        if force is False:
+            self.board.turn = 'white' if self.board.turn == 'black' else 'black'
 
     def attacking_squares(self):
         return self.get_moves()

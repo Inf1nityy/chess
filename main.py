@@ -9,7 +9,7 @@ pygame.display.set_caption("Chess")
 if __name__ == "__main__":
     board = Board(600, 600)
 
-    result = board.number_of_possible_positions(depth=2)
+    result = board.number_of_possible_positions(depth=1)
     print(f"Number of possible positions: {result}")
 
     while True:
